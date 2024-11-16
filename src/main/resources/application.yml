@@ -1,0 +1,43 @@
+server:
+    port: 8080
+
+spring:
+    application:
+        name: auth-gateway
+    cloud:
+        gateway:
+            routes:
+                - id: enterprise-service
+                  uri: https://enterprise-service:8082
+                  predicates:
+                      - Path=/api/enterprises/**
+                  filters:
+                      - RewritePath=/api/enterprises/(?<remaining>.*), /$\\{remaining}
+                - id: center-service
+                  uri: https://center-service:8083
+                  predicates:
+                      - Path=/api/centers/**
+                  filters:
+                      - RewritePath=/api/centers/(?<remaining>.*), /$\\{remaining}
+                - id: clinical-history-service
+                  uri: https://clinical-history-service:8084
+                  predicates:
+                      - Path=/api/clinicalHistory/**
+                  filters:
+                      - RewritePath=/api/clinicalHistory/(?<remaining>.*), /$\\{remaining}
+                - id: appointment-service
+                  uri: https://appointment-service:8085
+                  predicates:
+                      - Path=/api/appointments/**
+                  filters:
+                      - RewritePath=/api/appointments/(?<remaining>.*), /$\\{remaining}
+    jpa:
+        database: POSTGRESQL
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+    datasource:
+        url: jdbc:postgresql://localhost:5432/local_1
+        username: usuariopruebas
+        password: 1234
+        driverClassName: org.postgresql.Driver
